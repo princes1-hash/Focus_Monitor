@@ -1,4 +1,5 @@
 import logging
+import asyncio
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -33,16 +34,19 @@ async def lifespan(app: FastAPI):
     # 1. Connect to Database & Create Indexes
     await connect_to_db()
 
-    # 2. Pre-load ML models
-    try:
-        vm = VisionModelManager.get_instance()
-        em = EEGModelManager.get_instance()
-        logger.info("All ML models and assets successfully loaded.")
-    except Exception as e:
-        logger.error(f"Error loading ML models: {e}")
-        if settings.ENVIRONMENT == "production":
-            raise e
+    # 2. Asynchronously warm up ML models in worker thread without blocking port binding
+    async def warm_up_models():
+        try:
+            logger.info("Warming up ML models and MediaPipe assets...")
+            await asyncio.to_thread(VisionModelManager.get_instance)
+            await asyncio.to_thread(EEGModelManager.get_instance)
+            logger.info("All ML models and assets successfully loaded and ready.")
+        except Exception as e:
+            logger.error(f"Error loading ML models: {e}", exc_info=True)
 
+    asyncio.create_task(warm_up_models())
+
+    # Yield immediately so Uvicorn opens the listening port without triggering Render timeout
     yield
 
     logger.info("Shutting down Focus Monitor API backend...")

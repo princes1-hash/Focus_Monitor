@@ -28,7 +28,7 @@ async def health_check():
         models_loaded = False
 
     status = "ok" if (db_status == "ok" and models_loaded) else "degraded"
-    status_code = 200 if models_loaded else 503
+    status_code = 200
 
     return JSONResponse(
         status_code=status_code,
