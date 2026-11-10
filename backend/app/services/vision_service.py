@@ -56,6 +56,15 @@ class VisionModelManager:
         model_path = find_candidate("vision_model.joblib")
         task_path = find_candidate("face_landmarker.task")
 
+        if not os.path.exists(task_path):
+            try:
+                import urllib.request
+                url = "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"
+                os.makedirs(os.path.dirname(task_path), exist_ok=True)
+                urllib.request.urlretrieve(url, task_path)
+            except Exception:
+                pass
+
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Vision model file not found at {model_path}")
         if not os.path.exists(task_path):
