@@ -72,7 +72,11 @@ class VisionModelManager:
 
         self.vision_model = joblib.load(model_path)
 
-        base_options = mp_python.BaseOptions(model_asset_path=task_path)
+        # Force CPU execution to prevent GPU OpenGL context requirement in headless cloud environments
+        base_options = mp_python.BaseOptions(
+            model_asset_path=task_path,
+            delegate=mp_python.BaseOptions.Delegate.CPU
+        )
         options = mp_vision.FaceLandmarkerOptions(
             base_options=base_options,
             num_faces=1,
