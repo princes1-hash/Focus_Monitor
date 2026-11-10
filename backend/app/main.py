@@ -1,6 +1,46 @@
+import os
+import platform
+import subprocess
+import ctypes
 import logging
 import asyncio
 from contextlib import asynccontextmanager
+
+# Linux Headless OpenGL / GLES Shared Object Stub for Cloud Environments (e.g. Render)
+def ensure_linux_gl_stubs():
+    if platform.system() != "Linux":
+        return
+    for lib_name in ["libGLESv2.so.2", "libEGL.so.1", "libGL.so.1"]:
+        try:
+            ctypes.CDLL(lib_name)
+        except OSError:
+            libs_dir = os.path.join(os.path.dirname(__file__), ".libs")
+            os.makedirs(libs_dir, exist_ok=True)
+            so_file = os.path.join(libs_dir, lib_name)
+            c_file = os.path.join(libs_dir, "dummy_gl.c")
+            if not os.path.exists(so_file):
+                with open(c_file, "w") as f:
+                    f.write(
+                        "void* glGetString(unsigned int name) { return 0; }\n"
+                        "void glBindBuffer(unsigned int target, unsigned int buffer) {}\n"
+                        "unsigned int glCreateProgram(void) { return 1; }\n"
+                        "void glUseProgram(unsigned int program) {}\n"
+                        "void* eglGetDisplay(void* display_id) { return 0; }\n"
+                        "int eglInitialize(void* dpy, int* major, int* minor) { return 1; }\n"
+                        "int eglTerminate(void* dpy) { return 1; }\n"
+                    )
+                try:
+                    subprocess.run(["gcc", "-shared", "-fPIC", "-o", so_file, c_file], check=False)
+                except Exception:
+                    pass
+            if os.path.exists(so_file):
+                try:
+                    ctypes.CDLL(so_file, mode=ctypes.RTLD_GLOBAL)
+                except Exception:
+                    pass
+
+ensure_linux_gl_stubs()
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
