@@ -1,4 +1,5 @@
 import logging
+import certifi
 from pymongo import AsyncMongoClient
 from app.config import settings
 
@@ -12,9 +13,15 @@ db_instance = Database()
 
 async def connect_to_db():
     try:
+        client_kwargs = {
+            "serverSelectionTimeoutMS": 10000,
+        }
+        if "mongodb+srv" in settings.MONGODB_URI or "tls" in settings.MONGODB_URI.lower() or "ssl" in settings.MONGODB_URI.lower():
+            client_kwargs["tlsCAFile"] = certifi.where()
+
         db_instance.client = AsyncMongoClient(
             settings.MONGODB_URI,
-            serverSelectionTimeoutMS=5000
+            **client_kwargs
         )
         db_instance.db = db_instance.client[settings.MONGODB_DB_NAME]
         # Ping the server

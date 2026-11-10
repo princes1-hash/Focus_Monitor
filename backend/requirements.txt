@@ -10,6 +10,7 @@ pandas>=2.2.0
 mediapipe>=0.10.14
 opencv-python-headless>=4.10.0.84
 pymongo[srv]>=4.8.0
+certifi>=2024.7.4
 argon2-cffi>=23.1.0
 pyjwt>=2.9.0
 python-multipart>=0.0.9
