@@ -6,36 +6,28 @@ import logging
 import asyncio
 from contextlib import asynccontextmanager
 
-# Linux Headless OpenGL / GLES Shared Object Stub for Cloud Environments (e.g. Render)
+# Linux Headless OpenGL / GLES Shared Object Loader for Cloud Environments (e.g. Render)
 def ensure_linux_gl_stubs():
     if platform.system() != "Linux":
         return
-    for lib_name in ["libGLESv2.so.2", "libEGL.so.1", "libGL.so.1"]:
-        try:
-            ctypes.CDLL(lib_name)
-        except OSError:
-            libs_dir = os.path.join(os.path.dirname(__file__), ".libs")
-            os.makedirs(libs_dir, exist_ok=True)
-            so_file = os.path.join(libs_dir, lib_name)
-            c_file = os.path.join(libs_dir, "dummy_gl.c")
-            if not os.path.exists(so_file):
-                with open(c_file, "w") as f:
-                    f.write(
-                        "void* glGetString(unsigned int name) { return 0; }\n"
-                        "void glBindBuffer(unsigned int target, unsigned int buffer) {}\n"
-                        "unsigned int glCreateProgram(void) { return 1; }\n"
-                        "void glUseProgram(unsigned int program) {}\n"
-                        "void* eglGetDisplay(void* display_id) { return 0; }\n"
-                        "int eglInitialize(void* dpy, int* major, int* minor) { return 1; }\n"
-                        "int eglTerminate(void* dpy) { return 1; }\n"
-                    )
+
+    base_dir = os.path.dirname(__file__)
+    candidate_dirs = [
+        os.path.join(base_dir, ".libs"),
+        os.path.join(os.getcwd(), "backend", "app", ".libs"),
+        os.path.join(os.getcwd(), ".libs")
+    ]
+    libs_dir = next((d for d in candidate_dirs if os.path.exists(d)), None)
+
+    if libs_dir:
+        os.environ["LD_LIBRARY_PATH"] = f"{libs_dir}:{os.environ.get('LD_LIBRARY_PATH', '')}"
+
+        # Preload in exact dependency order into global symbol table
+        for lib in ["libGLdispatch.so.0", "libGLESv2.so.2", "libEGL.so.1", "libGL.so.1"]:
+            so_path = os.path.join(libs_dir, lib)
+            if os.path.exists(so_path):
                 try:
-                    subprocess.run(["gcc", "-shared", "-fPIC", "-o", so_file, c_file], check=False)
-                except Exception:
-                    pass
-            if os.path.exists(so_file):
-                try:
-                    ctypes.CDLL(so_file, mode=ctypes.RTLD_GLOBAL)
+                    ctypes.CDLL(so_path, mode=ctypes.RTLD_GLOBAL)
                 except Exception:
                     pass
 
