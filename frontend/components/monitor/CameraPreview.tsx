@@ -485,6 +485,14 @@ export const CameraPreview = forwardRef<CameraPreviewHandle, CameraPreviewProps>
           />
           {isActive ? "Telemetry Active • Landmarks Tracking" : "Camera Ready"}
         </div>
+
+        {/* Standby prompt when waiting for user to start */}
+        {!isActive && hasPermission && (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-black/75 backdrop-blur-md border border-[#F07832]/30 text-[11px] font-mono text-[#FFA040] flex items-center gap-2 pointer-events-none shadow-lg animate-pulse">
+            <span className="w-2 h-2 rounded-full bg-[#F07832] inline-block animate-ping" />
+            <span>Click &quot;START MONITORING&quot; below to launch AI face tracking</span>
+          </div>
+        )}
       </div>
     );
   }
