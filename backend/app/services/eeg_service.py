@@ -10,8 +10,23 @@ class EEGModelManager:
 
     def __init__(self):
         base_dir = os.path.dirname(os.path.dirname(__file__))
-        model_path = os.path.join(base_dir, "ml", "eeg_model.joblib")
-        data_path = os.path.join(base_dir, "data", "mock_eeg_stream.csv")
+
+        def find_candidate(filename: str, subfolder: str) -> str:
+            candidates = [
+                os.path.join(base_dir, subfolder, filename),
+                os.path.join(base_dir, "..", subfolder, filename),
+                os.path.join(base_dir, "..", filename),
+                os.path.join(os.getcwd(), "backend", "app", subfolder, filename),
+                os.path.join(os.getcwd(), filename),
+                filename
+            ]
+            for p in candidates:
+                if os.path.exists(p):
+                    return os.path.abspath(p)
+            return candidates[0]
+
+        model_path = find_candidate("eeg_model.joblib", "ml")
+        data_path = find_candidate("mock_eeg_stream.csv", "data")
 
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"EEG model file not found at {model_path}")

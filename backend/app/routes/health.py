@@ -19,13 +19,15 @@ async def health_check():
         db_status = "degraded"
 
     models_loaded = False
+    model_error = None
     try:
         vm = VisionModelManager.get_instance()
         em = EEGModelManager.get_instance()
         if vm.vision_model is not None and em.model is not None:
             models_loaded = True
-    except Exception:
+    except Exception as e:
         models_loaded = False
+        model_error = str(e)
 
     status = "ok" if (db_status == "ok" and models_loaded) else "degraded"
     status_code = 200
@@ -36,6 +38,7 @@ async def health_check():
             "status": status,
             "db": db_status,
             "models_loaded": models_loaded,
+            "model_error": model_error,
             "version": "1.0.0"
         }
     )

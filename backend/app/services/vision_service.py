@@ -38,8 +38,23 @@ class VisionModelManager:
 
     def __init__(self):
         base_dir = os.path.dirname(os.path.dirname(__file__))
-        model_path = os.path.join(base_dir, "ml", "vision_model.joblib")
-        task_path = os.path.join(base_dir, "ml", "face_landmarker.task")
+
+        def find_candidate(filename: str) -> str:
+            candidates = [
+                os.path.join(base_dir, "ml", filename),
+                os.path.join(base_dir, "..", "ml", filename),
+                os.path.join(base_dir, "..", filename),
+                os.path.join(os.getcwd(), "backend", "app", "ml", filename),
+                os.path.join(os.getcwd(), filename),
+                filename
+            ]
+            for p in candidates:
+                if os.path.exists(p):
+                    return os.path.abspath(p)
+            return candidates[0]
+
+        model_path = find_candidate("vision_model.joblib")
+        task_path = find_candidate("face_landmarker.task")
 
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Vision model file not found at {model_path}")
