@@ -22,6 +22,16 @@ def set_auth_cookie(response: Response, token: str):
     )
 
 def clear_auth_cookie(response: Response):
+    response.set_cookie(
+        key="access_token",
+        value="",
+        max_age=0,
+        expires=0,
+        path="/",
+        httponly=True,
+        secure=settings.COOKIE_SECURE,
+        samesite=settings.COOKIE_SAMESITE
+    )
     response.delete_cookie(
         key="access_token",
         path="/",
@@ -103,10 +113,10 @@ async def login(payload: LoginRequest, request: Request, response: Response):
 
     return AuthResponse(user=format_user_doc(user))
 
-@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
+@router.post("/logout")
 async def logout(response: Response):
     clear_auth_cookie(response)
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return {"status": "ok", "message": "Logged out successfully"}
 
 @router.get("/me", response_model=AuthResponse)
 async def get_me(current_user: dict = Depends(get_current_user)):

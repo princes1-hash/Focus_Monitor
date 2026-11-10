@@ -65,10 +65,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     try {
       await apiClient("/api/auth/logout", { method: "POST" });
+    } catch (err) {
+      console.warn("Logout error:", err);
     } finally {
       setUser(null);
+      if (typeof document !== "undefined") {
+        document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0";
+      }
       if (typeof window !== "undefined") {
-        window.location.href = "/";
+        window.location.href = "/login";
       }
     }
   };
