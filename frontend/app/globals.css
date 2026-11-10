@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *, .dark, .dark *));
+
+:root {
+  --background: #F7F8FA;
+  --background-secondary: #FFFFFF;
+  --background-soft: #F0F2F5;
+
+  --surface: #FFFFFF;
+  --surface-raised: #FFFFFF;
+  --surface-overlay: rgba(255, 255, 255, 0.9);
+
+  --text-primary: #17191F;
+  --text-secondary: #626873;
+  --text-muted: #9298A3;
+
+  --border-subtle: #E7E9EE;
+  --border-focus: rgba(240, 120, 50, 0.4);
+
+  --accent: #F07832;
+  --accent-hover: #E76520;
+  --accent-soft: #FFF1E8;
+  --accent-glow: rgba(240, 120, 50, 0.12);
+
+  --success: #239B68;
+  --success-bg: #E9F7F0;
+  --warning: #D99A27;
+  --warning-bg: #FFF6E5;
+  --danger: #DC5555;
+  --danger-bg: #FDEEEE;
+
+  --vis-color: #F07832;
+  --eeg-color: #6875D9;
+  --fusion-color: #239B68;
+}
+
+.dark, [data-theme="dark"] {
+  --background: #101012;
+  --background-secondary: #141417;
+  --background-soft: #1A1A1E;
+
+  --surface: #1A1A1E;
+  --surface-raised: #242428;
+  --surface-overlay: rgba(26, 26, 30, 0.85);
+
+  --text-primary: #FFFFFF;
+  --text-secondary: #B8B8BE;
+  --text-muted: #85858D;
+
+  --border-subtle: rgba(255, 255, 255, 0.12);
+  --border-focus: rgba(240, 120, 50, 0.5);
+
+  --accent: #F07832;
+  --accent-hover: #fa8846;
+  --accent-soft: rgba(240, 120, 50, 0.15);
+  --accent-glow: rgba(240, 120, 50, 0.25);
+
+  --success: #58B88A;
+  --success-bg: rgba(88, 184, 138, 0.15);
+  --warning: #E6B45C;
+  --warning-bg: rgba(230, 180, 92, 0.15);
+  --danger: #E36A6A;
+  --danger-bg: rgba(227, 106, 106, 0.15);
+
+  --vis-color: #F07832;
+  --eeg-color: #58B88A;
+  --fusion-color: #58B88A;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Glass Panels with Dark & Light Surface Switching */
+.glass-panel {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 4px 20px rgba(20, 25, 35, 0.04);
+}
+
+.dark .glass-panel {
+  background: rgba(26, 26, 30, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.glass-panel-elevated {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 10px 30px rgba(20, 25, 35, 0.07);
+}
+
+.dark .glass-panel-elevated {
+  background: rgba(36, 36, 40, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+.glow-accent {
+  box-shadow: 0 4px 24px var(--accent-glow);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: #D5D8E0;
+  border-radius: 3px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #242428;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B8BCC8;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #3A3A40;
+}
