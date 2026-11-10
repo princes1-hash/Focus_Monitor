@@ -402,9 +402,11 @@ export const CameraPreview = forwardRef<CameraPreviewHandle, CameraPreviewProps>
                   // Immediately draw to canvas with zero delay
                   drawOverlay(currentOverlay);
                   onFrameResult(data.telemetry, data.face_detected, currentOverlay);
+                } else {
+                  console.warn("Frame processing returned status:", res.status);
                 }
-              } catch {
-                // Network glitch or server busy
+              } catch (err) {
+                console.warn("Frame transmission error:", err);
               } finally {
                 inFlight = false;
               }

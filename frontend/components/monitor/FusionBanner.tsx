@@ -3,25 +3,61 @@ import { AlertTriangle, CheckCircle, BrainCircuit } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 
 interface FusionBannerProps {
+  status?: "idle" | "active" | "paused" | "completed";
   fusedState: string | null;
   fusedCode: "both_high" | "both_low" | "vision_high_eeg_low" | "vision_low_eeg_high" | null;
   discrepancyAlert: boolean;
 }
 
 export function FusionBanner({
+  status = "idle",
   fusedState,
   fusedCode,
   discrepancyAlert,
 }: FusionBannerProps) {
   
   if (!fusedCode) {
+    if (status === "active") {
+      return (
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#1A1A1E] border border-[#F07832]/30 shadow-sm flex items-center justify-between animate-pulse">
+          <div className="flex items-center gap-3">
+            <BrainCircuit className="w-5 h-5 text-[#F07832] animate-spin" />
+            <span className="text-xs uppercase font-bold tracking-wider text-[#F07832]">
+              Analyzing video stream & computing initial neural telemetry...
+            </span>
+          </div>
+        </div>
+      );
+    }
+
+    if (status === "paused") {
+      return (
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#1A1A1E] border border-[#D99A27]/30 shadow-sm flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#D99A27]" />
+            <span className="text-xs uppercase font-bold tracking-wider text-[#D99A27]">
+              Session Paused • Telemetry Stream Frozen
+            </span>
+          </div>
+        </div>
+      );
+    }
+
     return (
-      <div className="p-4 rounded-2xl bg-white dark:bg-[#1A1A1E] border border-[#E7E9EE] dark:border-white/10 shadow-sm flex items-center justify-between">
+      <div className="p-4 rounded-2xl bg-[#FFF9F5] dark:bg-[#1A1A1E] border border-[#F07832]/30 shadow-sm flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <BrainCircuit className="w-5 h-5 text-[#626873] dark:text-[#B8B8BE] animate-pulse" />
-          <span className="text-xs uppercase font-semibold tracking-wider text-[#626873] dark:text-[#B8B8BE]">
-            Awaiting Telemetry Inference...
-          </span>
+          <div className="relative flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#F07832] opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-[#F07832]"></span>
+          </div>
+          <div>
+            <span className="text-xs uppercase font-bold tracking-wider text-[#F07832] block">
+              Standby Mode — Click &quot;START MONITORING&quot; Below
+            </span>
+            <span className="text-[11px] text-[#626873] dark:text-[#B8B8BE]">
+              Camera is ready. Real-time ocular tracking and EEG inference will begin immediately when started.
+            </span>
+          </div>
         </div>
       </div>
     );

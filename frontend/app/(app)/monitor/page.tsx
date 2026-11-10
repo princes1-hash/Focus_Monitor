@@ -212,6 +212,7 @@ export default function MonitorPage() {
         <>
           {/* Fusion Classification Banner */}
           <FusionBanner
+            status={sessionStatus}
             fusedState={telemetry?.fused_state || null}
             fusedCode={telemetry?.fused_code || null}
             discrepancyAlert={telemetry?.discrepancy_alert || false}
