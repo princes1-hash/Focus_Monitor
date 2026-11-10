@@ -23,6 +23,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Modal } from "@/components/ui/Modal";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useToast } from "@/components/ui/Toast";
+import { formatIndiaDate, formatIndiaTime } from "@/lib/utils/date";
 
 export default function MomentsPage() {
   const { success, error } = useToast();
@@ -192,11 +193,11 @@ export default function MomentsPage() {
                 <div className="flex items-center gap-3 text-[11px] text-[#626873] dark:text-[#85858D] font-mono mb-4">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-3 h-3" />
-                    {new Date(moment.timestamp).toLocaleDateString()}
+                    {formatIndiaDate(moment.timestamp)}
                   </span>
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3" />
-                    {new Date(moment.timestamp).toLocaleTimeString()}
+                    {formatIndiaTime(moment.timestamp)} IST
                   </span>
                 </div>
 

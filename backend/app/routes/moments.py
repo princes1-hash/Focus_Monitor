@@ -11,6 +11,7 @@ from app.config import settings
 from app.utils.dependencies import get_current_user, parse_object_id
 from app.utils.errors import APIError
 from app.services.session_registry import session_registry
+from app.routes.monitoring import to_utc
 from app.schemas.moment import (
     CreateMomentRequest,
     MomentSchema,
@@ -26,7 +27,7 @@ def format_moment_doc(doc: dict) -> MomentSchema:
     return MomentSchema(
         id=mid,
         session_id=str(doc.get("session_id")),
-        timestamp=doc["timestamp"].isoformat() if isinstance(doc.get("timestamp"), datetime.datetime) else str(doc.get("timestamp")),
+        timestamp=to_utc(doc["timestamp"]).isoformat() if doc.get("timestamp") else "",
         fused_state=doc.get("fused_state", "Unknown"),
         fused_code=doc.get("fused_code", "both_low"),
         vision_score=doc.get("vision_score"),
@@ -37,7 +38,7 @@ def format_moment_doc(doc: dict) -> MomentSchema:
         note=doc.get("note"),
         has_image=has_img,
         image_url=f"/api/moments/{mid}/image" if has_img else None,
-        created_at=doc["created_at"].isoformat() if isinstance(doc.get("created_at"), datetime.datetime) else str(doc.get("created_at"))
+        created_at=to_utc(doc["created_at"]).isoformat() if doc.get("created_at") else ""
     )
 
 @router.post("", response_model=MomentResponse, status_code=status.HTTP_201_CREATED)

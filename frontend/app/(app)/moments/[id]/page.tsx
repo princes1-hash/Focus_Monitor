@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Modal } from "@/components/ui/Modal";
 import { useToast } from "@/components/ui/Toast";
+import { formatIndiaDateTime } from "@/lib/utils/date";
 
 export default function MomentDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -148,7 +149,7 @@ export default function MomentDetailPage() {
         )}
 
         <div className="flex items-center justify-between pt-4 border-t border-[#E7E9EE] dark:border-white/10 text-xs text-[#626873] dark:text-[#B8B8BE]">
-          <span>Captured: {new Date(moment.timestamp).toLocaleString()}</span>
+          <span>Captured: {formatIndiaDateTime(moment.timestamp)} IST</span>
           <Link
             href={`/history/${moment.session_id}`}
             className="text-[#F07832] hover:text-[#E76520] flex items-center gap-1 font-semibold"

@@ -55,14 +55,14 @@ def format_session_doc(doc: dict) -> SessionSchema:
         status=doc.get("status", "completed"),
         source=doc.get("source", "browser_camera"),
         eeg_source=doc.get("eeg_source", "simulated_csv"),
-        started_at=doc["started_at"].isoformat() if isinstance(doc.get("started_at"), datetime.datetime) else str(doc.get("started_at")),
-        ended_at=doc["ended_at"].isoformat() if isinstance(doc.get("ended_at"), datetime.datetime) else doc.get("ended_at"),
+        started_at=to_utc(doc["started_at"]).isoformat() if doc.get("started_at") else "",
+        ended_at=to_utc(doc["ended_at"]).isoformat() if doc.get("ended_at") else None,
         duration_seconds=doc.get("duration_seconds"),
         active_duration_seconds=doc.get("active_duration_seconds"),
         moments_count=doc.get("moments_count", 0),
         summary=doc.get("summary"),
         aggregated_metrics=doc.get("aggregated_metrics"),
-        created_at=doc["created_at"].isoformat() if isinstance(doc.get("created_at"), datetime.datetime) else str(doc.get("created_at"))
+        created_at=to_utc(doc["created_at"]).isoformat() if doc.get("created_at") else ""
     )
 
 @router.post("/start", response_model=StartMonitoringResponse, status_code=status.HTTP_201_CREATED)

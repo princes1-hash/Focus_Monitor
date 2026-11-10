@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Modal } from "@/components/ui/Modal";
 import { useToast } from "@/components/ui/Toast";
+import { formatIndiaDateTime, formatIndiaTime } from "@/lib/utils/date";
 
 export default function SessionDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -132,7 +133,7 @@ export default function SessionDetailPage() {
           <div className="p-4 rounded-xl bg-[#F0F2F5] dark:bg-[#141417] border border-[#E7E9EE]/60 dark:border-white/5">
             <span className="text-[10px] text-[#626873] dark:text-[#85858D] block">STARTED AT</span>
             <span className="text-sm font-bold text-[#17191F] dark:text-white">
-              {new Date(session.started_at).toLocaleTimeString()}
+              {formatIndiaTime(session.started_at)} IST
             </span>
           </div>
           <div className="p-4 rounded-xl bg-[#F0F2F5] dark:bg-[#141417] border border-[#E7E9EE]/60 dark:border-white/5">
@@ -230,7 +231,7 @@ export default function SessionDetailPage() {
                     </Badge>
                   </div>
                   <span className="text-[11px] text-[#626873] dark:text-[#85858D] font-mono block mb-3">
-                    {new Date(m.timestamp).toLocaleTimeString()} · Vision:{" "}
+                    {formatIndiaTime(m.timestamp)} IST · Vision:{" "}
                     {m.vision_score ? `${Math.round(m.vision_score * 100)}%` : "--"}
                   </span>
                   {m.note && (

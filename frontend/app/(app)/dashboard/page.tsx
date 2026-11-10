@@ -21,6 +21,7 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { formatIndiaDate, formatIndiaTime, formatIndiaDateTime } from "@/lib/utils/date";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -201,7 +202,7 @@ export default function DashboardPage() {
                     SESSION ID: {overview.latest_session.id}
                   </span>
                   <span className="text-sm font-bold uppercase text-[#17191F] dark:text-white">
-                    {new Date(overview.latest_session.started_at).toLocaleDateString(undefined, {
+                    {formatIndiaDate(overview.latest_session.started_at, {
                       dateStyle: "full",
                     })}
                   </span>
@@ -291,7 +292,7 @@ export default function DashboardPage() {
                       {m.fused_state}
                     </span>
                     <span className="text-[10px] text-[#626873] dark:text-[#85858D] font-mono block">
-                      {new Date(m.timestamp).toLocaleTimeString()} · Vision:{" "}
+                      {formatIndiaTime(m.timestamp)} IST · Vision:{" "}
                       {m.vision_score ? Math.round(m.vision_score * 100) : "--"}%
                     </span>
                     {m.note && (

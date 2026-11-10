@@ -3,6 +3,7 @@ import logging
 from typing import Optional, Dict, Any, List
 from bson import ObjectId
 from app.database import get_db
+from app.routes.monitoring import to_utc
 
 logger = logging.getLogger(__name__)
 
@@ -136,7 +137,7 @@ async def get_analytics_trends(
         eeg_dist = agg.get("eeg_score") or {}
 
         started = s.get("started_at")
-        started_str = started.isoformat() if isinstance(started, datetime.datetime) else str(started)
+        started_str = to_utc(started).isoformat() if started else ""
 
         trend_sessions.append({
             "session_id": str(s["_id"]),

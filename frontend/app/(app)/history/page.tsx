@@ -21,6 +21,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Modal } from "@/components/ui/Modal";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useToast } from "@/components/ui/Toast";
+import { formatIndiaDate, formatIndiaTime } from "@/lib/utils/date";
 
 export default function HistoryPage() {
   const { success, error } = useToast();
@@ -150,7 +151,7 @@ export default function HistoryPage() {
                 <div className="flex items-center gap-4 text-xs font-mono text-[#626873] dark:text-[#85858D]">
                   <span className="flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5" />
-                    {new Date(session.started_at).toLocaleDateString()}
+                    {formatIndiaDate(session.started_at)} • {formatIndiaTime(session.started_at)} IST
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5" />

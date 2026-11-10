@@ -21,6 +21,7 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
+import { formatIndiaDate, formatIndiaTime, parseUtcDate } from "@/lib/utils/date";
 
 export default function AnalyticsPage() {
   const { theme } = useTheme();
@@ -60,9 +61,8 @@ export default function AnalyticsPage() {
   const sessionsToDisplay = validSessions.length > 0 ? validSessions : trends?.sessions || [];
 
   const sessionChartData = sessionsToDisplay.map((s, idx) => {
-    const dateObj = new Date(s.started_at);
-    const dateStr = dateObj.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-    const timeStr = dateObj.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const dateStr = formatIndiaDate(s.started_at, { month: "short", day: "numeric" });
+    const timeStr = formatIndiaTime(s.started_at);
     const durationMins = Math.max(1, Math.round((s.active_duration_seconds || 0) / 60));
 
     return {
@@ -81,10 +81,7 @@ export default function AnalyticsPage() {
 
   const momentsChartData =
     trends?.moments_per_day.map((m) => {
-      const d = new Date(m.date);
-      const formatted = isNaN(d.getTime())
-        ? m.date
-        : d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+      const formatted = formatIndiaDate(m.date, { month: "short", day: "numeric" });
       return {
         date: formatted,
         rawDate: m.date,
@@ -109,7 +106,7 @@ export default function AnalyticsPage() {
             {data.session} • {data.date}
           </span>
           <span className="text-[10px] text-[#F07832] font-mono font-bold bg-[#FFF1E8] dark:bg-[#F07832]/15 px-2 py-0.5 rounded-md">
-            {data.time}
+            {data.time} IST
           </span>
         </div>
         <div className="space-y-1.5">
@@ -147,7 +144,7 @@ export default function AnalyticsPage() {
             {data.session} • {data.date}
           </span>
           <span className="text-[10px] text-[#626873] dark:text-[#85858D] font-mono font-medium">
-            {data.time}
+            {data.time} IST
           </span>
         </div>
         <div className="flex items-center justify-between gap-3">
